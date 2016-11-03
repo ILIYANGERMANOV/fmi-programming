@@ -1,2 +1,2 @@
 # fmi-programming
-Repo containing universitysamples and homeworks
+Repo containing university samples and homeworks
