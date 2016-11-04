@@ -44,14 +44,17 @@ public:
 
 
 class Matrix {
-    int mMatrix[8][8];
+    bool mMatrix[8][8] = {{false}}; //TODO: fix warning
 public:
     Matrix() {
-
     }
 
     void setAttackedPosition(int x, int y) {
+        mMatrix[x][y] = 1;
+    }
 
+    bool isPositionAttacked(int x, int y) {
+        return mMatrix[x][y];
     }
 };
 
@@ -70,8 +73,16 @@ public:
         mY = y;
     }
 
+    int getX() {
+        return mX;
+    }
+
     void setX(int x) {
         mX = x;
+    }
+
+    int getY() {
+        return mY;
     }
 
     void setY(int y) {
@@ -85,7 +96,7 @@ public:
 
     Attacker(int x, int y) : Figure(x, y) {}
 
-    virtual void attack(Matrix) = 0;
+    virtual void attack(Matrix &) = 0;
 };
 
 class Queen : public Attacker {
@@ -94,7 +105,7 @@ public:
 
     Queen(int x, int y) : Attacker(x, y) {}
 
-    void attack(Matrix matrix) {
+    void attack(Matrix &matrix) {
         cout << "Queen attack" << endl;
     }
 };
@@ -105,7 +116,7 @@ public:
 
     Bishop(int x, int y) : Attacker(x, y) {}
 
-    void attack(Matrix matrix) {
+    void attack(Matrix &matrix) {
         cout << "Bishop attack" << endl;
     }
 };
@@ -117,7 +128,7 @@ public:
 
     Knight(int x, int y) : Attacker(x, y) {}
 
-    void attack(Matrix matrix) {
+    void attack(Matrix &matrix) {
         cout << "Knight attack" << endl;
     }
 };
@@ -128,12 +139,13 @@ public:
 
     Rook(int x, int y) : Attacker(x, y) {}
 
-    void attack(Matrix matrix) {
+    void attack(Matrix &matrix) {
         cout << "Rook attack" << endl;
     }
 };
 
 class ChessBoard {
+    Matrix mMatrix;
     Attacker *mAttacker;
     Figure mKing;
 
@@ -168,7 +180,7 @@ class ChessBoard {
         char symbol;
         cin >> symbol;
         int position = (int) (symbol - 'a');
-        if(position < 0 || position > 8) throw BadInputException();
+        if (position < 0 || position > 8) throw BadInputException();
         return position;
     }
 
@@ -183,10 +195,19 @@ class ChessBoard {
     }
 
 public:
+    ChessBoard()
+            : mMatrix(Matrix()) {}
+
     void initBoard() {
         initAttackerType();
         initAttackerPosition();
         initKingPosition();
+    }
+
+    bool isKingAttacked() {
+        mAttacker->attack(mMatrix);
+        return mMatrix.isPositionAttacked(mKing.getX(),
+                                          mKing.getY());
     }
 
     ~ChessBoard() {
@@ -199,6 +220,11 @@ int main() {
     try {
         ChessBoard chessBoard = ChessBoard();
         chessBoard.initBoard();
+        if (chessBoard.isKingAttacked()) {
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
+        }
     } catch (BadInputException ex) {
         ex.printError();
     }
