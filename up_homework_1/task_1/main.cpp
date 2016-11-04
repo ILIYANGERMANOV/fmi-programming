@@ -88,6 +88,18 @@ class SupportedRomanianNumerals {
     static const int SUPPORTED_VALUES_LENGTH = 13;
 
     RomanianNumeral **mSupportedNumerals;
+
+    void initSupportedNumeralsRecursively(const int *values, const string *numerals, int index) {
+        if (index >= SUPPORTED_VALUES_LENGTH)
+            return;
+        RomanianNumeral *currentNumeral = new RomanianNumeral(numerals[index], values[index]);
+        if (index > 0) {
+            currentNumeral->setSuccessor(mSupportedNumerals[index - 1]);
+        }
+        mSupportedNumerals[index] = currentNumeral;
+        initSupportedNumeralsRecursively(values, numerals, index + 1);
+    }
+
 public:
     SupportedRomanianNumerals() {
         const int VALUES[] =
@@ -97,15 +109,7 @@ public:
 
         mSupportedNumerals = new RomanianNumeral *[SUPPORTED_VALUES_LENGTH];
 
-        //I know I should not use loops, but if this initialization without loops
-        //would be overkill
-        for (int i = 0; i < SUPPORTED_VALUES_LENGTH; ++i) {
-            RomanianNumeral *currentNumeral = new RomanianNumeral(NUMERALS[i], VALUES[i]);
-            if (i > 0) {
-                currentNumeral->setSuccessor(mSupportedNumerals[i - 1]);
-            }
-            mSupportedNumerals[i] = currentNumeral;
-        }
+        initSupportedNumeralsRecursively(VALUES, NUMERALS, 0);
     }
 
     const RomanianNumeral getLargestNumeral() {
