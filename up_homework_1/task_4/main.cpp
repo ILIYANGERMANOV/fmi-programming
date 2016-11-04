@@ -35,6 +35,8 @@ Y е цифра от 1 до 8, означаващо пореден ред на �
 
 using namespace std;
 
+#define CHESS_SIZE 8
+
 class BadInputException {
 public:
     void printError() {
@@ -44,7 +46,7 @@ public:
 
 
 class Matrix {
-    bool mMatrix[8][8] = {{false}}; //TODO: fix warning
+    bool mMatrix[CHESS_SIZE][CHESS_SIZE] = {{false}}; //TODO: fix warning
 public:
     Matrix() {
     }
@@ -180,7 +182,7 @@ class ChessBoard {
         char symbol;
         cin >> symbol;
         int position = (int) (symbol - 'a');
-        if (position < 0 || position > 8) throw BadInputException();
+        if (position < 0 || position > CHESS_SIZE) throw BadInputException();
         return position;
     }
 
