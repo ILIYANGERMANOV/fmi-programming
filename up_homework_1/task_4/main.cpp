@@ -1,7 +1,6 @@
 /**
  * WARNING: Java and Android conventions used!
  */
-#include <iostream>
 
 /*
  * Да се напише програма, която по дадени координати на цар и друга фигура
@@ -33,6 +32,9 @@ Y е цифра от 1 до 8, означаващо пореден ред на �
 
  */
 
+#include <iostream>
+#include <cmath>
+
 using namespace std;
 
 #define CHESS_SIZE 8
@@ -44,19 +46,33 @@ public:
     }
 };
 
-
-class Matrix {
-    bool mMatrix[CHESS_SIZE][CHESS_SIZE] = {{false}}; //TODO: fix warning
+class AttackStrategy {
+protected:
+    int mAttackerX;
+    int mAttackerY;
 public:
-    Matrix() {
-    }
+    AttackStrategy(int attackerX, int attackerY) :
+            mAttackerX(attackerX), mAttackerY(attackerY) {}
 
-    void setAttackedPosition(int x, int y) {
-        mMatrix[x][y] = 1;
-    }
+    virtual bool isPositionAffected(int targetX, int targetY) = 0;
+};
 
-    bool isPositionAttacked(int x, int y) {
-        return mMatrix[x][y];
+class HorizontalAttackStrategy : public AttackStrategy {
+public:
+    HorizontalAttackStrategy(int attackerX, int attackerY) : AttackStrategy(attackerX, attackerY) {}
+
+    bool isPositionAffected(int targetX, int targetY) {
+        return mAttackerX == targetX || mAttackerY == targetY;
+    }
+};
+
+
+class DiagonalAttackStrategy : public AttackStrategy {
+public:
+    DiagonalAttackStrategy(int attackerX, int attackerY) : AttackStrategy(attackerX, attackerY) {}
+
+    bool isPositionAffected(int targetX, int targetY) {
+        return abs(mAttackerX - targetX) == abs(mAttackerY - targetY);
     }
 };
 
@@ -65,16 +81,6 @@ protected:
     int mX;
     int mY;
 public:
-    Figure() {
-        mX = -1;
-        mY = -1;
-    }
-
-    Figure(int x, int y) {
-        mX = x;
-        mY = y;
-    }
-
     int getX() {
         return mX;
     }
@@ -94,60 +100,42 @@ public:
 
 class Attacker : public Figure {
 public:
-    Attacker() : Figure() {}
-
-    Attacker(int x, int y) : Figure(x, y) {}
-
-    virtual void attack(Matrix &) = 0;
+    virtual bool isTargetAttacked(int targetX, int targetY) = 0;
 };
 
 class Queen : public Attacker {
 public:
-    Queen() : Attacker() {}
-
-    Queen(int x, int y) : Attacker(x, y) {}
-
-    void attack(Matrix &matrix) {
-        cout << "Queen attack" << endl;
+    bool isTargetAttacked(int targetX, int targetY) {
+        return DiagonalAttackStrategy(mX, mY).isPositionAffected(targetX, targetY)
+               || HorizontalAttackStrategy(mX, mY).isPositionAffected(targetX, targetY);
     }
 };
 
 class Bishop : public Attacker {
 public:
-    Bishop() : Attacker() {}
-
-    Bishop(int x, int y) : Attacker(x, y) {}
-
-    void attack(Matrix &matrix) {
-        cout << "Bishop attack" << endl;
+    bool isTargetAttacked(int targetX, int targetY) {
+        return DiagonalAttackStrategy(mX, mY).isPositionAffected(targetX, targetY);
     }
 };
 
 class Knight : public Attacker {
 public:
-    Knight() : Attacker() {}
-
-
-    Knight(int x, int y) : Attacker(x, y) {}
-
-    void attack(Matrix &matrix) {
-        cout << "Knight attack" << endl;
+    bool isTargetAttacked(int targetX, int targetY) {
+        int xDelta = abs(mX - targetX);
+        int yDelta = abs(mY - targetY);
+        return (xDelta == 2 && yDelta == 1)
+               || (xDelta == 1 && yDelta == 2);
     }
 };
 
 class Rook : public Attacker {
 public:
-    Rook() : Attacker() {}
-
-    Rook(int x, int y) : Attacker(x, y) {}
-
-    void attack(Matrix &matrix) {
-        cout << "Rook attack" << endl;
+    bool isTargetAttacked(int targetX, int targetY) {
+        return HorizontalAttackStrategy(mX, mY).isPositionAffected(targetX, targetY);
     }
 };
 
 class ChessBoard {
-    Matrix mMatrix;
     Attacker *mAttacker;
     Figure mKing;
 
@@ -172,23 +160,9 @@ class ChessBoard {
         }
     }
 
-    int readX() {
-        int position;
-        cin >> position;
-        return position;
-    }
-
-    int readY() {
-        char symbol;
-        cin >> symbol;
-        int position = (int) (symbol - 'a');
-        if (position < 0 || position > CHESS_SIZE) throw BadInputException();
-        return position;
-    }
-
     void initAttackerPosition() {
         mAttacker->setX(readX());
-        mAttacker->setX(readY());
+        mAttacker->setY(readY());
     }
 
     void initKingPosition() {
@@ -196,10 +170,26 @@ class ChessBoard {
         mKing.setY(readY());
     }
 
-public:
-    ChessBoard()
-            : mMatrix(Matrix()) {}
+    int readX() {
+        char symbol;
+        cin >> symbol;
+        int position = (int) (symbol - 'a');
+        if (isInvalidAxisPosition(position)) throw BadInputException();
+        return position;
+    }
 
+    int readY() {
+        int position;
+        cin >> position;
+        if (isInvalidAxisPosition(position)) throw BadInputException();
+        return position;
+    }
+
+    bool isInvalidAxisPosition(int position) {
+        return position < 0 || position > CHESS_SIZE;
+    }
+
+public:
     void initBoard() {
         initAttackerType();
         initAttackerPosition();
@@ -207,9 +197,7 @@ public:
     }
 
     bool isKingAttacked() {
-        mAttacker->attack(mMatrix);
-        return mMatrix.isPositionAttacked(mKing.getX(),
-                                          mKing.getY());
+        return mAttacker->isTargetAttacked(mKing.getX(), mKing.getY());
     }
 
     ~ChessBoard() {
