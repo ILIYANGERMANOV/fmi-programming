@@ -58,18 +58,18 @@ public:
 class ConversionFailedException {
 };
 
-class RomanianNumeral {
+class RomananNumeral {
     string mSymbol;
     int mDecimalValue;
-    RomanianNumeral *mSuccessor;
+    RomananNumeral *mSuccessor;
 public:
-    RomanianNumeral(string symbol, int decimalValue) {
+    RomananNumeral(string symbol, int decimalValue) {
         mSymbol = symbol;
         mDecimalValue = decimalValue;
         mSuccessor = 0;
     }
 
-    void setSuccessor(RomanianNumeral *successor) {
+    void setSuccessor(RomananNumeral *successor) {
         mSuccessor = successor;
     }
 
@@ -84,15 +84,15 @@ public:
     }
 };
 
-class SupportedRomanianNumerals {
+class SupportedRomanNumerals {
     static const int SUPPORTED_VALUES_LENGTH = 13;
 
-    RomanianNumeral **mSupportedNumerals;
+    RomananNumeral **mSupportedNumerals;
 
     void initSupportedNumeralsRecursively(const int *values, const string *numerals, int index) {
         if (index >= SUPPORTED_VALUES_LENGTH)
             return;
-        RomanianNumeral *currentNumeral = new RomanianNumeral(numerals[index], values[index]);
+        RomananNumeral *currentNumeral = new RomananNumeral(numerals[index], values[index]);
         if (index > 0) {
             currentNumeral->setSuccessor(mSupportedNumerals[index - 1]);
         }
@@ -101,22 +101,22 @@ class SupportedRomanianNumerals {
     }
 
 public:
-    SupportedRomanianNumerals() {
+    SupportedRomanNumerals() {
         const int VALUES[] =
                 {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
         const string NUMERALS[] =
                 {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
 
-        mSupportedNumerals = new RomanianNumeral *[SUPPORTED_VALUES_LENGTH];
+        mSupportedNumerals = new RomananNumeral *[SUPPORTED_VALUES_LENGTH];
 
         initSupportedNumeralsRecursively(VALUES, NUMERALS, 0);
     }
 
-    const RomanianNumeral getLargestNumeral() {
+    const RomananNumeral getLargestNumeral() {
         return *mSupportedNumerals[SUPPORTED_VALUES_LENGTH - 1];
     }
 
-    ~SupportedRomanianNumerals() {
+    ~SupportedRomanNumerals() {
         for (int i = 0; i < SUPPORTED_VALUES_LENGTH; ++i) {
             delete mSupportedNumerals[i];
         }
@@ -124,17 +124,17 @@ public:
     }
 };
 
-class RomanianNumber {
-    string mRomanianNumber;
+class RomanNumber {
+    string mRomanNumber;
 
-    void initRomanianNumber(RomanianNumeral largerSupportedNumeral, int decimalNumber) {
+    void initRomanNumber(RomananNumeral largestSupportedNumeral, int decimalNumber) {
         try {
-            //!NOTE: RomanianNumeral#startTransformChain(decimalNumber) has side effect:
-            //reduces the decimalNumber by romanian numeral value if the romanian value is larger than the decimalNumber
+            //!NOTE: RomanNumeral#startTransformChain(decimalNumber) has side effect:
+            //reduces the decimalNumber by roman numeral value if the roman value is larger than the decimalNumber
             //WARN: THIS IS TERRIBLE DESIGN PRACTISE but not letting me use loops isn't cool, too :/
-            mRomanianNumber += largerSupportedNumeral.startTransformChain(decimalNumber);
+            mRomanNumber += largestSupportedNumeral.startTransformChain(decimalNumber);
             if (decimalNumber != 0) {
-                initRomanianNumber(largerSupportedNumeral, decimalNumber);
+                initRomanNumber(largestSupportedNumeral, decimalNumber);
             }
         } catch (ConversionFailedException ex) {
             cout << "Something terrible happened :/" << endl;
@@ -142,14 +142,14 @@ class RomanianNumber {
     }
 
 public:
-    RomanianNumber(int decimalNumber) {
-        mRomanianNumber = "";
-        SupportedRomanianNumerals romanianNumerals = SupportedRomanianNumerals();
-        initRomanianNumber(romanianNumerals.getLargestNumeral(), decimalNumber);
+    RomanNumber(int decimalNumber) {
+        mRomanNumber = "";
+        SupportedRomanNumerals romanNumerals = SupportedRomanNumerals();
+        initRomanNumber(romanNumerals.getLargestNumeral(), decimalNumber);
     }
 
     void print() {
-        cout << mRomanianNumber << endl;
+        cout << mRomanNumber << endl;
     }
 };
 //Domain layer
@@ -161,8 +161,8 @@ int main() {
 
     try {
         int number = numberReader.readNumberFromStandardInput();
-        RomanianNumber romanianNumber = RomanianNumber(number);
-        romanianNumber.print();
+        RomanNumber romanNumber = RomanNumber(number);
+        romanNumber.print();
     } catch (InvalidNumberException ex) {
         ex.printErrorMessage();
     }
