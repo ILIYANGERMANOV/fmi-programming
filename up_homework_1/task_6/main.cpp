@@ -70,7 +70,8 @@ int calculateOverlappingArea(Rectangle rect1, Rectangle rect2) {
              - max(rect1.getBottomLeft().getX(), rect2.getBottomLeft().getX());
     int yIntersection = min(rect1.getTopRight().getY(), rect2.getTopRight().getY())
              - max(rect1.getBottomLeft().getY(), rect2.getBottomLeft().getY());
-    return xIntersection * yIntersection;
+    int overlappingArea = xIntersection * yIntersection;
+    return overlappingArea > 0 ? overlappingArea : 0;
 }
 
 int main() {
