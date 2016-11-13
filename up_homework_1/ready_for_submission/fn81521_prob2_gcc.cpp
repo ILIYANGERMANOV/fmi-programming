@@ -154,13 +154,6 @@ public:
     bool validateMonth(int month) {
         return month > 0 && month <= 12;
     }
-
-    void print() {
-        for (int i = 0; i < CITIZEN_NUMBER_LENGTH; ++i) {
-            cout << mCitizenNumber[i];
-        }
-        cout << endl;
-    }
 };
 
 
@@ -169,7 +162,6 @@ int main() {
         long citizenNumberInput;
         cin >> citizenNumberInput;
         UniqueCitizenNumber uniqueCitizenNumber = UniqueCitizenNumber(citizenNumberInput);
-//        uniqueCitizenNumber.print();
         uniqueCitizenNumber.printInfo();
     } catch (InvalidCitizenNumberException ex) {
         ex.printError();
