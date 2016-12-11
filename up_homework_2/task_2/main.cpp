@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 
@@ -21,12 +22,26 @@ public:
 
     void generateAndPrint() {
         cout << "3 5" << endl;
-        int middleHolder;
-        for (int i = 1; i <= mN - 1; ++i) {
-            //twin primes formula: (6*n - 1, 6*n + 1) works for everything except (3,5)
-            middleHolder = 6 * i;
-            cout << middleHolder - 1 << ' ' << middleHolder + 1 << endl;
+        int middleHolder, counter = 1;
+        int printedTwinPrimes = 1, firstTwin, secondTwin;
+        while (printedTwinPrimes < mN) {
+            middleHolder = 6 * counter;
+            firstTwin = middleHolder - 1;
+            secondTwin = middleHolder + 1;
+            if (isPrimeNumber(firstTwin) && isPrimeNumber(secondTwin)) {
+                cout << firstTwin << ' ' << secondTwin << endl;
+                printedTwinPrimes++;
+            }
+            counter++;
         }
+    }
+
+private:
+    bool isPrimeNumber(int number) {
+        for (int divider = 2; divider <= sqrt(number); ++divider) {
+            if (number % divider == 0) return false;
+        }
+        return true;
     }
 };
 
