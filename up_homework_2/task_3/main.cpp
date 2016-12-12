@@ -5,6 +5,8 @@ using namespace std;
 
 #define MAX_INPUT_VALUE 4000000000
 
+//TODO: investigate bugs with big numbers
+
 bool validateInput(int number) {
     return number > 0 && number < MAX_INPUT_VALUE;
 }
