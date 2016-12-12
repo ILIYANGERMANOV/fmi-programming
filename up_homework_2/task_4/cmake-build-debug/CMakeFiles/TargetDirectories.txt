@@ -1,0 +1,3 @@
+/home/iliyan/fmi/up/repos/fmi-programming/up_homework_2/task_4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/iliyan/fmi/up/repos/fmi-programming/up_homework_2/task_4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/iliyan/fmi/up/repos/fmi-programming/up_homework_2/task_4/cmake-build-debug/CMakeFiles/task_4.dir
