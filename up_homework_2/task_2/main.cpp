@@ -38,8 +38,8 @@ public:
 
 private:
     bool isPrimeNumber(int number) {
-        int largesPossibletDivider = (int) sqrt(number);
-        for (int divider = 2; divider <= largesPossibletDivider; ++divider) {
+        int largesPossibleDivider = (int) sqrt(number);
+        for (int divider = 2; divider <= largesPossibleDivider; ++divider) {
             if (number % divider == 0) return false;
         }
         return true;
