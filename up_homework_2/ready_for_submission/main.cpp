@@ -7,60 +7,66 @@
  * 
  * @author Iliyan Germanov 
  * @idnumber 81521 
- * @task 4 
+ * @task 2 
  * @compiler GCC 
  * 
  */
 #include <iostream>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include <cmath>
 
 using namespace std;
 
-void setZeros(int *arr, int len) {
-    for (int i = 0; i < len; ++i) {
-        arr[i] = 0;
-    }
-}
+#define MAX_N_VALUE 100000
 
-int *generateDigitsCountArr(int number) {
-    int *digitsCountArr = new int[10];
-    setZeros(digitsCountArr, 10);
-    while (number != 0) {
-        digitsCountArr[number % 10]++;
-        number /= 10;
+class TwinPrimesGenerator {
+    int mN;
+public:
+    TwinPrimesGenerator(int n) {
+        if (n <= 0 || n > MAX_N_VALUE) {
+            stringstream sStream;
+            sStream << "N must be in (0, " << MAX_N_VALUE << ')';
+            throw invalid_argument(sStream.str());
+        }
+        mN = n;
     }
-    return digitsCountArr;
-}
 
-bool hasCommonSet(int firstNumber, int secondNumber) {
-    bool result = true;
-    int *firstNumDigits = generateDigitsCountArr(firstNumber);
-    int *secondNumDigits = generateDigitsCountArr(secondNumber);
-    int countHolder1, countHolder2;
-    for (int i = 0; i < 10; ++i) {
-        countHolder1 = firstNumDigits[i];
-        countHolder2 = secondNumDigits[i];
-        if ((countHolder1 && !countHolder2) || (!countHolder1 && countHolder2)) {
-            result = false;
-            break;
-        };
+    void generateAndPrint() {
+        cout << "3 5" << endl;
+        int middleHolder, counter = 1;
+        int printedTwinPrimes = 1, firstTwin, secondTwin;
+        while (printedTwinPrimes < mN) {
+            middleHolder = 6 * counter;
+            firstTwin = middleHolder - 1;
+            secondTwin = middleHolder + 1;
+            if (isPrimeNumber(firstTwin) && isPrimeNumber(secondTwin)) {
+                cout << firstTwin << ' ' << secondTwin << endl;
+                printedTwinPrimes++;
+            }
+            counter++;
+        }
     }
-    delete[] firstNumDigits;
-    delete[] secondNumDigits;
-    return result;
-}
 
-int abs(int number) {
-    return number >= 0 ? number : -number;
-}
+private:
+    bool isPrimeNumber(int number) {
+        int largesPossibletDivider = (int) sqrt(number);
+        for (int divider = 2; divider <= largesPossibletDivider; ++divider) {
+            if (number % divider == 0) return false;
+        }
+        return true;
+    }
+};
 
 int main() {
-    int firstNumber, secondNumber;
-    cin >> firstNumber;
-    cin >> secondNumber;
-    if (hasCommonSet(abs(firstNumber), abs(secondNumber))) {
-        cout << "Yes" << endl;
-    } else {
-        cout << "No" << endl;
+    int n;
+    cin >> n;
+    try {
+        TwinPrimesGenerator twinPrimesGenerator = TwinPrimesGenerator(n);
+        twinPrimesGenerator.generateAndPrint();
+    } catch (invalid_argument e) {
+        cout << e.what() << endl;
     }
     return 0;
 }

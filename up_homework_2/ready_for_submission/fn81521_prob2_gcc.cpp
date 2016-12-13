@@ -51,7 +51,8 @@ public:
 
 private:
     bool isPrimeNumber(int number) {
-        for (int divider = 2; divider <= sqrt(number); ++divider) {
+        int largesPossibletDivider = (int) sqrt(number);
+        for (int divider = 2; divider <= largesPossibletDivider; ++divider) {
             if (number % divider == 0) return false;
         }
         return true;
