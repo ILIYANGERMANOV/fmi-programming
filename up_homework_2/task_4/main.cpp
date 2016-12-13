@@ -19,21 +19,21 @@ int *generateDigitsCountArr(int number) {
 }
 
 bool hasCommonSet(int firstNumber, int secondNumber) {
-    bool result = true;
+    bool hasCommonSetResult = true;
     int *firstNumDigits = generateDigitsCountArr(firstNumber);
     int *secondNumDigits = generateDigitsCountArr(secondNumber);
-    int countHolder1, countHolder2;
+    int digitCountHolder1, digitCountHolder2;
     for (int i = 0; i < 10; ++i) {
-        countHolder1 = firstNumDigits[i];
-        countHolder2 = secondNumDigits[i];
-        if ((countHolder1 && !countHolder2) || (!countHolder1 && countHolder2)) {
-            result = false;
+        digitCountHolder1 = firstNumDigits[i];
+        digitCountHolder2 = secondNumDigits[i];
+        if ((digitCountHolder1 && !digitCountHolder2) || (!digitCountHolder1 && digitCountHolder2)) {
+            hasCommonSetResult = false;
             break;
         };
     }
     delete[] firstNumDigits;
     delete[] secondNumDigits;
-    return result;
+    return hasCommonSetResult;
 }
 
 int abs(int number) {
