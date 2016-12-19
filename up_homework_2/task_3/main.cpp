@@ -7,14 +7,14 @@ using namespace std;
 
 //TODO: investigate bugs with big numbers
 
-bool validateInput(int number) {
+bool validateInput(unsigned int number) {
     return number > 0 && number < MAX_INPUT_VALUE;
 }
 
 class FirstNumberAppearsInSecondCount {
-    int mFirstNumber, mSecondNumber;
+    unsigned int mFirstNumber, mSecondNumber;
 public:
-    FirstNumberAppearsInSecondCount(int a, int b) {
+    FirstNumberAppearsInSecondCount(unsigned int a, unsigned int b) {
         mFirstNumber = a;
         mSecondNumber = b;
     }
@@ -29,20 +29,17 @@ public:
 
 private:
     int countAppearsTimes() {
-        map<int, int> countMap;
+        int appearsCount = 0;
         int firstNumLength = getNumberLength(mFirstNumber);
         int secondNumLength = getNumberLength(mSecondNumber);
         int *secondNumArr = convertNumberToArray(mSecondNumber, secondNumLength);
 
         for (int i = 0; i <= secondNumLength - firstNumLength; ++i) {
             int extractedNumber = getNumberFromArr(secondNumArr, i, firstNumLength);
-            if (countMap.find(extractedNumber) == countMap.end()) {
-                countMap[extractedNumber] = 1;
-                continue;
+            if (extractedNumber == mFirstNumber) {
+                appearsCount++;
             }
-            countMap[extractedNumber]++;
         }
-        int appearsCount = countMap.find(mFirstNumber) != countMap.end() ? countMap[mFirstNumber] : 0;
 
         delete[] secondNumArr;
         return appearsCount;
@@ -63,7 +60,7 @@ private:
         return length;
     }
 
-    int *convertNumberToArray(int number, int length) {
+    int *convertNumberToArray(unsigned int number, int length) {
         int *array = new int[length];
         int counter = 0;
         while (number != 0) {
@@ -75,7 +72,7 @@ private:
 };
 
 int main() {
-    int a, b;
+    unsigned int a, b;
     cin >> a;
     cin >> b;
     if (!validateInput(a) || !validateInput(b)) {
