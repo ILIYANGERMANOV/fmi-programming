@@ -13,17 +13,16 @@ bool validateInput(int n, int m, int y) {
     return true;
 }
 
-int mPow(int a, int n) {
-    while (n > 1) {
-        a *= a;
-        n--;
+int calculateNumber(int a, int n, int m) {
+    int result = 1;
+    while (n > 0) {
+        result *= a;
+        result %= m;
+        --n;
     }
-    return a;
+    return result % m;
 }
 
-int calculateNumber(int x, int n, int m) {
-    return mPow(x, n) % m;
-}
 
 void printSpaces(bool &isFirstPrinted) {
     if (isFirstPrinted) {
@@ -45,11 +44,11 @@ int main() {
     int calculatedNumber;
     bool isFirstPrint = true;
     bool isAnyNumberPrinted = false;
-    for (int i = 1; i < m; ++i) {
-        calculatedNumber = calculateNumber(i, n, m);
+    for (int x = 1; x <= m - 1; ++x) {
+        calculatedNumber = calculateNumber(x, n, m);
         if (calculatedNumber == y) {
             printSpaces(isFirstPrint);
-            cout << calculatedNumber;
+            cout << x;
             isAnyNumberPrinted = true;
         }
     }
