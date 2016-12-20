@@ -7,92 +7,67 @@
  * 
  * @author Iliyan Germanov 
  * @idnumber 81521 
- * @task 3 
+ * @task 2 
  * @compiler GCC 
  * 
  */
 #include <iostream>
-#include <map>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include <stdio.h>
+#include <cmath>
 
 using namespace std;
 
-#define MAX_INPUT_VALUE 4000000000
+#define MAX_N_VALUE 100000
 
-//TODO: investigate bugs with big numbers
-
-bool validateInput(unsigned int number) {
-    return number > 0 && number < MAX_INPUT_VALUE;
-}
-
-class FirstNumberAppearsInSecondCount {
-    unsigned int mFirstNumber, mSecondNumber;
+class TwinPrimesGenerator {
+    int mN;
 public:
-    FirstNumberAppearsInSecondCount(unsigned int a, unsigned int b) {
-        mFirstNumber = a;
-        mSecondNumber = b;
+    TwinPrimesGenerator(int n) {
+        if (n <= 0 || n > MAX_N_VALUE) {
+            stringstream sStream;
+            sStream << "N must be in (0, " << MAX_N_VALUE << ')';
+            throw invalid_argument(sStream.str());
+        }
+        mN = n;
     }
 
-    void printValue() {
-        if (mFirstNumber > mSecondNumber) {
-            cout << '0' << endl;
-        } else {
-            cout << countAppearsTimes() << endl;
+    void generateAndPrint() {
+        cout << "3 5" << endl;
+        int middleHolder, counter = 1;
+        int printedTwinPrimes = 1, firstTwin, secondTwin;
+        while (printedTwinPrimes < mN) {
+            middleHolder = 6 * counter;
+            firstTwin = middleHolder - 1;
+            secondTwin = middleHolder + 1;
+            if (isPrimeNumber(firstTwin) && isPrimeNumber(secondTwin)) {
+                printf("%d %d\n", firstTwin, secondTwin);
+                printedTwinPrimes++;
+            }
+            counter++;
         }
     }
 
 private:
-    int countAppearsTimes() {
-        int appearsCount = 0;
-        int firstNumLength = getNumberLength(mFirstNumber);
-        int secondNumLength = getNumberLength(mSecondNumber);
-        int *secondNumArr = convertNumberToArray(mSecondNumber, secondNumLength);
-
-        for (int i = 0; i <= secondNumLength - firstNumLength; ++i) {
-            int extractedNumber = getNumberFromArr(secondNumArr, i, firstNumLength);
-            if (extractedNumber == mFirstNumber) {
-                appearsCount++;
-            }
+    bool isPrimeNumber(int number) {
+        int largesPossibleDivider = (int) sqrt(number);
+        for (int divider = 2; divider <= largesPossibleDivider; ++divider) {
+            if (number % divider == 0) return false;
         }
-
-        delete[] secondNumArr;
-        return appearsCount;
-    }
-
-    int getNumberFromArr(int *arr, int position, int numLen) {
-        int number = 0, factor = 1;
-        for (int i = position; i < position + numLen; ++i) {
-            number += arr[i] * factor;
-            factor *= 10;
-        }
-        return number;
-    }
-
-    int getNumberLength(int number) {
-        int length = 1;
-        while ((number /= 10) != 0) length++;
-        return length;
-    }
-
-    int *convertNumberToArray(unsigned int number, int length) {
-        int *array = new int[length];
-        int counter = 0;
-        while (number != 0) {
-            array[counter++] = number % 10;
-            number /= 10;
-        }
-        return array;
+        return true;
     }
 };
 
 int main() {
-    unsigned int a, b;
-    cin >> a;
-    cin >> b;
-    if (!validateInput(a) || !validateInput(b)) {
-        cout << "Invalid input!" << endl;
-        return -1;
+    int n;
+    cin >> n;
+    try {
+        TwinPrimesGenerator twinPrimesGenerator = TwinPrimesGenerator(n);
+        twinPrimesGenerator.generateAndPrint();
+    } catch (invalid_argument e) {
+        cout << e.what() << endl;
     }
-    FirstNumberAppearsInSecondCount count = FirstNumberAppearsInSecondCount(a, b);
-    count.printValue();
     return 0;
 }
