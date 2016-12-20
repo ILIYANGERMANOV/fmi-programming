@@ -1,24 +1,56 @@
 #include <iostream>
-#include <cmath>
 
 using namespace std;
 
-/**
- * Algorithm borrowed from Victor Mukherjee's answer in StackOverflow
- *
- * http://stackoverflow.com/questions/12983731/algorithm-for-calculating-binomial-coefficient
- *
- * @param n
- * @param k
- * @return binomial value of n over k (n!/(n!*(n-k)!)
- */
-long binomial(int n, int k) {
-    double sum = 0;
-    for (long i = 0; i < k; i++) {
-        sum += log10(n - i);
-        sum -= log10(i + 1);
+// Optimized algorithm borrowed from https://github.com/meyerd/binomial
+//
+//unsigned long long binomialCoefficient(unsigned long long n, unsigned long long k) {
+//    // symmetry
+//    if (k > n - k) {
+//        k = n - k;
+//    }
+//    if (k > n / 2) {
+//        k = n - k;
+//    }
+//
+//    unsigned long long counter = 1;
+//    unsigned long long result = 1;
+//    for (; counter <= k; counter++) {
+//        result *= n--;
+//        result /= counter;
+//    }
+//
+//    return result;
+//}
+
+unsigned long long dropDownProduct(int n, int k) {
+    unsigned long long result = 1;
+    for (int i = 0; i < k; ++i) {
+        result *= (n - i);
     }
-    return (long) pow(10, sum);;
+    return result;
+}
+
+unsigned long long factorial(int n) {
+    unsigned long long result = 1;
+    while (n > 0) {
+        result *= n;
+        n--;
+    }
+    return result;
+}
+
+//Mine algorithm
+int binomialCoefficient(int n, int k) {
+    if (n == k) return 1;
+    if (n == k - 1) return n;
+    if (k == 0) return 1;
+    int nMinusK = n - k;
+    if (k < nMinusK) {
+        return (int) (dropDownProduct(n, n - nMinusK) / factorial(k));
+    } else {
+        return (int) (dropDownProduct(n, n - k) / factorial(nMinusK));
+    }
 }
 
 void printFactors(int n) {
@@ -29,7 +61,7 @@ void printFactors(int n) {
         } else {
             isFirstPrint = false;
         }
-        cout << binomial(n, k);
+        cout << binomialCoefficient(n, k);
     }
     cout << endl;
 }
