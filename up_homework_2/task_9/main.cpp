@@ -2,14 +2,14 @@
 
 using namespace std;
 
-int getNumberLength(int number) {
+int getNumberLength(unsigned int number) {
     int length = 1;
     while ((number /= 10) != 0) length++;
     return length;
 }
 
-int getValueWithoutDigit(int number, int digitIndex) {
-    int result = 0;
+int getValueWithoutDigit(unsigned int number, int digitIndex) {
+    unsigned int result = 0;
     int base = 1;
     for (int i = 0; i <= digitIndex; ++i, number /= 10) {
         if (i == digitIndex) {
