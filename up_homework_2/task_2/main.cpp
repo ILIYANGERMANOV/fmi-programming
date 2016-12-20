@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <stdio.h>
 #include <cmath>
 
 using namespace std;
@@ -29,7 +30,7 @@ public:
             firstTwin = middleHolder - 1;
             secondTwin = middleHolder + 1;
             if (isPrimeNumber(firstTwin) && isPrimeNumber(secondTwin)) {
-                cout << firstTwin << ' ' << secondTwin << endl;
+                printf("%d %d\n", firstTwin, secondTwin);
                 printedTwinPrimes++;
             }
             counter++;
