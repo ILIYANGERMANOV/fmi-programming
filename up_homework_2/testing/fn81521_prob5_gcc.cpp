@@ -7,7 +7,7 @@
  * 
  * @author Iliyan Germanov 
  * @idnumber 81521 
- * @task 10 
+ * @task 5 
  * @compiler GCC 
  * 
  */
@@ -15,7 +15,7 @@
 #include <fstream>
 #include <iostream>
 
-#define TASK_NUMBER "10"
+#define TASK_NUMBER "5"
 #define STATE_FILE "state" TASK_NUMBER
 
 void initStateFile();
