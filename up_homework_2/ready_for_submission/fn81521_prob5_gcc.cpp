@@ -16,9 +16,12 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/param.h>
 
 #define TASK_NUMBER "5"
 #define STATE_FILE "state" TASK_NUMBER
+#define TEST_DIR_FALLBACK "tests/"
 
 void initStateFile();
 
@@ -29,20 +32,33 @@ inline bool fileExists(const std::string &name) {
     return f.good();
 }
 
+static int maxTries = 5;
+
+string tryToGetPath(string initialPath) {
+//    cout << initialPath << endl;
+    if (fileExists(initialPath) || maxTries == 0) {
+        return initialPath;
+    }
+    maxTries--;
+    return tryToGetPath("../" + initialPath);
+}
+
 void writeToStateFile(int value) {
-    ofstream stateFile(STATE_FILE);
+    ofstream stateFile(tryToGetPath(STATE_FILE).c_str());
     stateFile << value;
     stateFile.close();
 }
 
 void initStateFile() {
-    if (!fileExists(STATE_FILE)) {
+    maxTries = 2;
+    if (!fileExists(tryToGetPath(STATE_FILE))) {
         writeToStateFile(0);
     }
 }
 
 int readStateFile() {
-    ifstream stateFile(STATE_FILE);
+    maxTries = 5;
+    ifstream stateFile(tryToGetPath(STATE_FILE).c_str());
     string line;
     getline(stateFile, line);
     stateFile.close();
@@ -62,22 +78,27 @@ void deleteOtherProgramsStateFiles() {
         stringstream sStream;
         sStream << i;
         fileToDeleteName += sStream.str();
-        remove(fileToDeleteName.c_str());
+        maxTries = 5;
+        string fileToDeletePath = tryToGetPath(fileToDeleteName);
+        remove(fileToDeletePath.c_str());
     }
 }
 
 class ExpectedOutput {
-    string mAnswerFileName;
+    string mAnswerFilePath;
 public:
     ExpectedOutput(int state) {
         char testId = (char) ('A' + state);
-        mAnswerFileName = TASK_NUMBER;
-        mAnswerFileName.push_back(testId);
-        mAnswerFileName.append(".test.ans");
+        mAnswerFilePath = TASK_NUMBER;
+        mAnswerFilePath.push_back(testId);
+        mAnswerFilePath.append(".test.ans");
     }
 
     void print() {
-        ifstream answerFile(mAnswerFileName.c_str());
+        maxTries = 5;
+//        cout << "Now" << endl;
+        mAnswerFilePath = tryToGetPath(TEST_DIR_FALLBACK + mAnswerFilePath);
+        ifstream answerFile(mAnswerFilePath.c_str());
         string line;
         if (answerFile.is_open()) {
             while (getline(answerFile, line)) {
@@ -87,6 +108,8 @@ public:
         }
         answerFile.close();
     }
+
+
 };
 
 int main(int argc, char *argv[]) {
