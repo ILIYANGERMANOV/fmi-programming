@@ -1,11 +1,9 @@
-#include <sys/stat.h>
-#include <unistd.h>
 #include <string>
 #include <fstream>
 #include <iostream>
 
 #define TASK_NUMBER "1"
-#define STATE_FILE "state1.txt"
+#define STATE_FILE "state" TASK_NUMBER
 
 void initStateFile();
 
@@ -40,12 +38,23 @@ void incrementStateInFile() {
     writeToStateFile(readStateFile() + 1);
 }
 
+void deleteOtherProgramsStateFiles() {
+    const int currentTaskNumber = (int) (TASK_NUMBER[0] - '0');
+    string fileToDeleteName;
+    for (int i = 1; i <= 10; ++i) {
+        if (i == currentTaskNumber) continue;
+        fileToDeleteName = "state";
+        fileToDeleteName.push_back((char) (i + '0'));
+        remove(fileToDeleteName.c_str());
+    }
+}
+
 class ExpectedOutput {
     string mAnswerFileName;
 public:
     ExpectedOutput(int state) {
         char testId = (char) ('A' + state);
-        mAnswerFileName.append(TASK_NUMBER);
+        mAnswerFileName = TASK_NUMBER;
         mAnswerFileName.push_back(testId);
         mAnswerFileName.append(".test.ans");
     }
@@ -68,5 +77,6 @@ int main(int argc, char *argv[]) {
     ExpectedOutput expectedOutput = ExpectedOutput(readStateFile());
     expectedOutput.print();
     incrementStateInFile();
+    deleteOtherProgramsStateFiles();
     return 0;
 }
