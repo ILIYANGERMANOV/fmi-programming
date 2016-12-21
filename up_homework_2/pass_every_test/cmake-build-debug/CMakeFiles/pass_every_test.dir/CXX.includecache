@@ -13,4 +13,8 @@ fstream
 -
 iostream
 -
+sstream
+-
+stdlib.h
+-
 

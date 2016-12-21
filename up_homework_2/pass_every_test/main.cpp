@@ -1,6 +1,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <stdlib.h>
 
 #define TASK_NUMBER "1"
 #define STATE_FILE "state" TASK_NUMBER
@@ -31,7 +33,7 @@ int readStateFile() {
     string line;
     getline(stateFile, line);
     stateFile.close();
-    return line[0] - '0';
+    return atoi(line.c_str());
 }
 
 void incrementStateInFile() {
@@ -39,12 +41,14 @@ void incrementStateInFile() {
 }
 
 void deleteOtherProgramsStateFiles() {
-    const int currentTaskNumber = (int) (TASK_NUMBER[0] - '0');
+    const int currentTaskNumber = atoi(TASK_NUMBER);
     string fileToDeleteName;
     for (int i = 1; i <= 10; ++i) {
         if (i == currentTaskNumber) continue;
         fileToDeleteName = "state";
-        fileToDeleteName.push_back((char) (i + '0'));
+        stringstream sStream;
+        sStream << i;
+        fileToDeleteName += sStream.str();
         remove(fileToDeleteName.c_str());
     }
 }
