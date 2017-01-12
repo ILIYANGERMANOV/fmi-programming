@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/iliyan/fmi/up/repos/fmi-programming/up_homework_2/pass_every_test/main.cpp
+string
+-
+fstream
+-
+iostream
+-
+sstream
+-
+stdlib.h
+-
+unistd.h
+-
+sys/param.h
+-
+
