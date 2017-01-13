@@ -40,6 +40,10 @@ void solve(vector<int> &a, vector<int> &b, int i, int n, int final) {
 }
 
 void printProfessorXRow(int n) {
+    if (n == 1) {
+        cout << '1' << endl;
+        return;
+    }
     vector<int> a = vector<int>();
     vector<int> b = vector<int>();
     solve(a, b, 1, 2, n);
