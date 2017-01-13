@@ -1,57 +1,36 @@
 #include <iostream>
-#include <stack>
-#include <vector>
+#include <list>
 
 using namespace std;
 
-//1 - 1
-//121 - 3
-//1213121 - 7
-//121312141213121 - 15
-//1213121412131215121312141213121 - 31 => 2*prev + 1
-//63
-//127
-
+//121
 //1213121
-
-void fill(vector<int> source, vector<int> &target) {
-    while (!source.empty()) {
-        int val = source.back();
-        target.push_back(val);
-        source.pop_back();
-    }
+void buildProfessorXRowInList(list<int> &l, int i, int n) {
+    l.push_back(i);
+    l.insert(l.end(), l.begin(), --l.end());
+    if (i == n) return;
+    buildProfessorXRowInList(l, i + 1, n);
 }
 
-void solve(vector<int> &a, vector<int> &b, int i, int n, int final) {
-    if (i == n) {
-        fill(a, b);
-        b.push_back(n);
-        fill(a, b);
-        if (i == final)
-            return;
-        a.clear();
-        fill(b, a);
-        b.clear();
-        solve(a, b, i + 1, n + 1, final);
-        return;
+void printList(list<int> l) {
+    for (list<int>::iterator it = l.begin(); it != l.end(); ++it) {
+        cout << *it;
     }
-    a.push_back(i);
-    solve(a, b, i + 1, n, final);
+    cout << endl;
 }
 
 void printProfessorXRow(int n) {
     if (n == 1) {
         cout << '1' << endl;
         return;
+    } else if (n == 2) {
+        cout << "121" << endl;
+        return;
     }
-    vector<int> a = vector<int>();
-    vector<int> b = vector<int>();
-    solve(a, b, 1, 2, n);
-    while (!b.empty()) {
-        cout << b.back();
-        b.pop_back();
-    }
-    cout << endl;
+    list<int> l = list<int>();
+    l.push_back(121);
+    buildProfessorXRowInList(l, 3, n);
+    printList(l);
 }
 
 int main() {
