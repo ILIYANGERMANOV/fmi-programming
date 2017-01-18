@@ -7,7 +7,7 @@
  * 
  * @author Iliyan Germanov 
  * @idnumber 81521 
- * @task 10 
+ * @task 7 
  * @compiler GCC 
  * 
  */
@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <sys/param.h>
 
-#define TASK_NUMBER "10"
+#define TASK_NUMBER "7"
 #define STATE_FILE "state" TASK_NUMBER
 #define TEST_DIR_FALLBACK "tests/"
 
